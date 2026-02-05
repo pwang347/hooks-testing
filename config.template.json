@@ -1,0 +1,20 @@
+{
+    "SessionStart": {
+        "additionalContext": null
+    },
+    "UserPromptSubmit": {
+    },
+    "PreToolUse": {
+    },
+    "PostToolUse": {
+    },
+    "SubagentStart": {
+        "additionalContext": null
+    },
+    "SubagentStop": {
+    },
+    "Stop": {
+        "decision": null,
+        "reason": null
+    }
+}

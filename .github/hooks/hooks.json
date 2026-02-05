@@ -1,0 +1,75 @@
+{
+	"version": 1,
+	"hooks": {
+		"SessionStart": [
+			{
+				"type": "command",
+				"command": "bash .github/hooks/log.sh"
+			},
+			{
+				"type": "command",
+				"command": "bash .github/hooks/hooks.sh"
+			}
+		],
+		"UserPromptSubmit": [
+			{
+				"type": "command",
+				"command": "bash .github/hooks/log.sh"
+			},
+			{
+				"type": "command",
+				"command": "bash .github/hooks/hooks.sh"
+			}
+		],
+		"PreToolUse": [
+			{
+				"type": "command",
+				"command": "bash .github/hooks/log.sh"
+			},
+			{
+				"type": "command",
+				"command": "bash .github/hooks/hooks.sh"
+			}
+		],
+		"PostToolUse": [
+			{
+				"type": "command",
+				"command": "bash .github/hooks/log.sh"
+			},
+			{
+				"type": "command",
+				"command": "bash .github/hooks/hooks.sh"
+			}
+		],
+		"SubagentStart": [
+			{
+				"type": "command",
+				"command": "bash .github/hooks/log.sh"
+			},
+			{
+				"type": "command",
+				"command": "bash .github/hooks/hooks.sh"
+			}
+		],
+		"SubagentStop": [
+			{
+				"type": "command",
+				"command": "bash .github/hooks/log.sh"
+			},
+			{
+				"type": "command",
+				"command": "bash .github/hooks/hooks.sh"
+			}
+		],
+		"Stop": [
+			{
+				"type": "command",
+				"command": "bash .github/hooks/log.sh"
+			},
+			{
+				"type": "command",
+				"command": "bash .github/hooks/hooks.sh"
+			}
+		]
+	}
+}
