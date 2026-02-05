@@ -34,5 +34,13 @@ if [ -z "$OUTPUT" ] || [ "$OUTPUT" = "{}" ] || [ "$OUTPUT" = "null" ]; then
     exit 0
 fi
 
+# Log the output
+SESSION_ID=$(echo "$INPUT" | jq -r '.sessionId')
+SESSION_ID="${SESSION_ID##*/}"
+DATE_PREFIX=$(date +"%d-%m-%Y")
+OUTPUT_LOG_DIR="logs/$DATE_PREFIX/$SESSION_ID/output"
+mkdir -p "$OUTPUT_LOG_DIR"
+echo "$OUTPUT" >> "$OUTPUT_LOG_DIR/$HOOK_EVENT.log"
+
 # Emit the output JSON
 echo "$OUTPUT"
