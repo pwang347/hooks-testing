@@ -3,11 +3,16 @@
 # Read the entire JSON input from stdin
 INPUT=$(cat)
 
-# Log received input to stderr (doesn't affect output)
-echo "Received input: $INPUT" >&2
-
 # Parse specific fields
 HOOK_EVENT=$(echo "$INPUT" | jq -r '.hookEventName')
+SESSION_ID=$(echo "$INPUT" | jq -r '.sessionId')
+SESSION_ID="${SESSION_ID##*/}"
+DATE_PREFIX=$(date +"%d-%m-%Y")
+
+# Log input
+INPUT_LOG_DIR="logs/$DATE_PREFIX/$SESSION_ID/input"
+mkdir -p "$INPUT_LOG_DIR"
+echo "$INPUT" >> "$INPUT_LOG_DIR/$HOOK_EVENT.log"
 
 # Resolve config.json path relative to repo root
 REPO_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || echo "$(dirname "$0")/../..")
@@ -35,9 +40,6 @@ if [ -z "$OUTPUT" ] || [ "$OUTPUT" = "{}" ] || [ "$OUTPUT" = "null" ]; then
 fi
 
 # Log the output
-SESSION_ID=$(echo "$INPUT" | jq -r '.sessionId')
-SESSION_ID="${SESSION_ID##*/}"
-DATE_PREFIX=$(date +"%d-%m-%Y")
 OUTPUT_LOG_DIR="logs/$DATE_PREFIX/$SESSION_ID/output"
 mkdir -p "$OUTPUT_LOG_DIR"
 echo "$OUTPUT" >> "$OUTPUT_LOG_DIR/$HOOK_EVENT.log"
