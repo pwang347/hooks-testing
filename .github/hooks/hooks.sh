@@ -8,11 +8,15 @@ HOOK_EVENT=$(echo "$INPUT" | jq -r '.hookEventName')
 SESSION_ID=$(echo "$INPUT" | jq -r '.sessionId')
 SESSION_ID="${SESSION_ID##*/}"
 DATE_PREFIX=$(date +"%d-%m-%Y")
+SESSION_DIR="logs/$DATE_PREFIX/$SESSION_ID"
 
 # Log input
-INPUT_LOG_DIR="logs/$DATE_PREFIX/$SESSION_ID/input"
+INPUT_LOG_DIR="$SESSION_DIR/input"
 mkdir -p "$INPUT_LOG_DIR"
 echo "$INPUT" >> "$INPUT_LOG_DIR/$HOOK_EVENT.log"
+
+# Append to global log (preserves order across hook types)
+echo "$INPUT" >> "$SESSION_DIR/global.log"
 
 # Resolve config.json path relative to repo root
 REPO_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || echo "$(dirname "$0")/../..")
@@ -40,9 +44,12 @@ if [ -z "$OUTPUT" ] || [ "$OUTPUT" = "{}" ] || [ "$OUTPUT" = "null" ]; then
 fi
 
 # Log the output
-OUTPUT_LOG_DIR="logs/$DATE_PREFIX/$SESSION_ID/output"
+OUTPUT_LOG_DIR="$SESSION_DIR/output"
 mkdir -p "$OUTPUT_LOG_DIR"
 echo "$OUTPUT" >> "$OUTPUT_LOG_DIR/$HOOK_EVENT.log"
+
+# Append output to global log
+echo "$OUTPUT" >> "$SESSION_DIR/global.log"
 
 # Emit the output JSON
 echo "$OUTPUT"
