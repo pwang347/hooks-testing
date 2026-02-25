@@ -4,43 +4,43 @@
 		"SessionStart": [
 			{
 				"type": "command",
-				"command": "bash .github/hooks/hooks.sh"
+				"command": "node .github/hooks/hooks.js"
 			}
 		],
 		"UserPromptSubmit": [
 			{
 				"type": "command",
-				"command": "bash .github/hooks/hooks.sh"
+				"command": "node .github/hooks/hooks.js"
 			}
 		],
 		"PreToolUse": [
 			{
 				"type": "command",
-				"command": "bash .github/hooks/hooks.sh"
+				"command": "node .github/hooks/hooks.js"
 			}
 		],
 		"PostToolUse": [
 			{
 				"type": "command",
-				"command": "bash .github/hooks/hooks.sh"
+				"command": "node .github/hooks/hooks.js"
 			}
 		],
 		"SubagentStart": [
 			{
 				"type": "command",
-				"command": "bash .github/hooks/hooks.sh"
+				"command": "node .github/hooks/hooks.js"
 			}
 		],
 		"SubagentStop": [
 			{
 				"type": "command",
-				"command": "bash .github/hooks/hooks.sh"
+				"command": "node .github/hooks/hooks.js"
 			}
 		],
 		"Stop": [
 			{
 				"type": "command",
-				"command": "bash .github/hooks/hooks.sh"
+				"command": "node .github/hooks/hooks.js"
 			}
 		]
 	}

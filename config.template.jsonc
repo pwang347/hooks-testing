@@ -1,0 +1,74 @@
+{
+    // Each key corresponds to a hook event that the hooks.sh script handles.
+    // For each event, you can configure:
+    //   - "exitCode": Process exit code. 0 = success, non-zero = failure/block.
+    //   - "stdout":   JSON object emitted to stdout. This is what the hook consumer reads.
+    //   - "stderr":   String emitted to stderr. Use for error messages or diagnostics.
+
+    // Fired when a new session starts.
+    "SessionStart": {
+        "exitCode": 0,
+        "stdout": {
+            // "hookSpecificOutput" contains fields specific to this event type.
+            "hookSpecificOutput": {
+                // "additionalContext" injects extra instructions into the session.
+                // Set to a string to add context, or null to skip.
+                "additionalContext": null
+            }
+        },
+        "stderr": ""
+    },
+
+    // Fired when the user submits a prompt.
+    "UserPromptSubmit": {
+        "exitCode": 0,
+        "stdout": {},
+        "stderr": ""
+    },
+
+    // Fired before a tool is invoked.
+    // Use a non-zero exitCode to block tool execution.
+    "PreToolUse": {
+        "exitCode": 0,
+        "stdout": {},
+        "stderr": ""
+    },
+
+    // Fired after a tool completes.
+    "PostToolUse": {
+        "exitCode": 0,
+        "stdout": {},
+        "stderr": ""
+    },
+
+    // Fired when a subagent starts.
+    "SubagentStart": {
+        "exitCode": 0,
+        "stdout": {
+            "hookSpecificOutput": {
+                // "additionalContext" injects extra instructions into the subagent.
+                "additionalContext": null
+            }
+        },
+        "stderr": ""
+    },
+
+    // Fired when a subagent stops.
+    "SubagentStop": {
+        "exitCode": 0,
+        "stdout": {},
+        "stderr": ""
+    },
+
+    // Fired when the agent is about to stop.
+    "Stop": {
+        "exitCode": 0,
+        "stdout": {
+            // "decision": Override the stop decision. Set to "approve" or "deny", or null to not override.
+            "decision": null,
+            // "reason": Optional reason for the decision override.
+            "reason": null
+        },
+        "stderr": ""
+    }
+}
