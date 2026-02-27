@@ -1,16 +1,25 @@
 {
-    // Each key corresponds to a hook event that the hooks.sh script handles.
+    // Each key corresponds to a hook event that the hooks.js script handles.
     // For each event, you can configure:
-    //   - "exitCode": Process exit code. 0 = success, non-zero = failure/block.
+    //   - "exitCode": Process exit code.
+    //       0 = success (stdout parsed as JSON)
+    //       2 = blocking error (stop processing, show error to model)
+    //       other = non-blocking warning (show warning to user, continue)
     //   - "stdout":   JSON object emitted to stdout. This is what the hook consumer reads.
+    //       Common output fields (supported by all hooks):
+    //         "continue": boolean - set to false to stop processing (default: true)
+    //         "stopReason": string - reason for stopping (shown to the model)
+    //         "systemMessage": string - message displayed to the user
     //   - "stderr":   String emitted to stderr. Use for error messages or diagnostics.
 
     // Fired when a new session starts.
+    // Input includes: { "source": "new" }
     "SessionStart": {
         "exitCode": 0,
         "stdout": {
             // "hookSpecificOutput" contains fields specific to this event type.
             "hookSpecificOutput": {
+                "hookEventName": "SessionStart",
                 // "additionalContext" injects extra instructions into the session.
                 // Set to a string to add context, or null to skip.
                 "additionalContext": null
@@ -20,6 +29,8 @@
     },
 
     // Fired when the user submits a prompt.
+    // Input includes: { "prompt": "<user prompt text>" }
+    // Uses common output format only.
     "UserPromptSubmit": {
         "exitCode": 0,
         "stdout": {},
@@ -27,25 +38,60 @@
     },
 
     // Fired before a tool is invoked.
-    // Use a non-zero exitCode to block tool execution.
+    // Input includes: { "tool_name": "...", "tool_input": {...}, "tool_use_id": "..." }
     "PreToolUse": {
         "exitCode": 0,
-        "stdout": {},
+        "stdout": {
+            "hookSpecificOutput": {
+                "hookEventName": "PreToolUse",
+                // "permissionDecision": Controls tool approval. Set to "allow", "deny", or "ask".
+                //   When multiple hooks run, the most restrictive decision wins: deny > ask > allow.
+                "permissionDecision": null,
+                // "permissionDecisionReason": Reason shown to the user for the decision.
+                "permissionDecisionReason": null,
+                // "updatedInput": Modified tool input (optional). Must match the tool's expected schema.
+                "updatedInput": null,
+                // "additionalContext": Extra context for the model.
+                "additionalContext": null
+            }
+        },
         "stderr": ""
     },
 
-    // Fired after a tool completes.
+    // Fired after a tool completes successfully.
+    // Input includes: { "tool_name": "...", "tool_input": {...}, "tool_use_id": "...", "tool_response": "..." }
     "PostToolUse": {
+        "exitCode": 0,
+        "stdout": {
+            // "decision": Set to "block" to block further processing (optional).
+            "decision": null,
+            // "reason": Reason for blocking (shown to the model).
+            "reason": null,
+            "hookSpecificOutput": {
+                "hookEventName": "PostToolUse",
+                // "additionalContext": Extra context injected into the conversation.
+                "additionalContext": null
+            }
+        },
+        "stderr": ""
+    },
+
+    // Fired before conversation context is compacted.
+    // Input includes: { "trigger": "auto" }
+    // Uses common output format only.
+    "PreCompact": {
         "exitCode": 0,
         "stdout": {},
         "stderr": ""
     },
 
     // Fired when a subagent starts.
+    // Input includes: { "agent_id": "...", "agent_type": "..." }
     "SubagentStart": {
         "exitCode": 0,
         "stdout": {
             "hookSpecificOutput": {
+                "hookEventName": "SubagentStart",
                 // "additionalContext" injects extra instructions into the subagent.
                 "additionalContext": null
             }
@@ -53,21 +99,32 @@
         "stderr": ""
     },
 
-    // Fired when a subagent stops.
+    // Fired when a subagent completes.
+    // Input includes: { "agent_id": "...", "agent_type": "...", "stop_hook_active": false }
     "SubagentStop": {
         "exitCode": 0,
-        "stdout": {},
+        "stdout": {
+            // "decision": Set to "block" to prevent the subagent from stopping.
+            "decision": null,
+            // "reason": Required when decision is "block". Tells the subagent why it should continue.
+            "reason": null
+        },
         "stderr": ""
     },
 
-    // Fired when the agent is about to stop.
+    // Fired when the agent session ends.
+    // Input includes: { "stop_hook_active": false }
+    //   Check "stop_hook_active" to prevent the agent from running indefinitely.
     "Stop": {
         "exitCode": 0,
         "stdout": {
-            // "decision": Override the stop decision. Set to "approve" or "deny", or null to not override.
-            "decision": null,
-            // "reason": Optional reason for the decision override.
-            "reason": null
+            "hookSpecificOutput": {
+                "hookEventName": "Stop",
+                // "decision": Set to "block" to prevent the agent from stopping.
+                "decision": null,
+                // "reason": Required when decision is "block". Tells the agent why it should continue.
+                "reason": null
+            }
         },
         "stderr": ""
     }
