@@ -17,8 +17,8 @@ fs.closeSync(fd);
 input = Buffer.concat(chunks).toString('utf8');
 
 const parsed = JSON.parse(input);
-const hookEvent = parsed.hookEventName;
-const sessionId = parsed.sessionId;
+const hookEvent = parsed.hook_event_name;
+const sessionId = parsed.session_id;
 
 // Date prefix: DD-MM-YYYY
 const now = new Date();
